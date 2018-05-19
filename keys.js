@@ -1,8 +1,3 @@
-var twitter = require("twitter");//twitter
-var spotify = require('node-spotify-api');//spotify
-var request = require('request');//installed and dotenv
-
-
 
 
 console.log('this is loaded');
