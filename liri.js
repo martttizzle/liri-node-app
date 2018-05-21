@@ -1,19 +1,20 @@
 require("dotenv").config();
-var keys = require("./keys.js");
-var request = require('request');
+const keys = require("./keys.js");
+const request = require('request');
 //spotify
-var Spotify = require('node-spotify-api');
-var spotify = new Spotify(keys.spotify);
+const Spotify = require('node-spotify-api');
+const spotify = new Spotify(keys.spotify);
 //twitter
-var twitter = require("twitter");
-var client = new twitter(keys.twitter);
+const twitter = require("twitter");
+const client = new twitter(keys.twitter);
 //File System
-var fs = require("fs");
+const fs = require("fs");
 //User input
-var command = process.argv[2];
-var input = process.argv[3];
+const command = process.argv[2];
+const input = process.argv[3];
+
 //put all command user inputs into object
-var nodeArgs = process.argv;
+const nodeArgs = process.argv;
 
 switch (command) {
   case "my-tweets":
@@ -31,34 +32,49 @@ switch (command) {
 }
 
 function imdbMovie(input) {
-  console.log(input);
-if (input === "undefined") {
-  console.log("failed")
-}else{
   let T = input;
-
   request('http://www.omdbapi.com/?t=' + T + '&y&apikey=trilogy', function (error, response, body) {
-  if (error) {
-    console.log(error);
-  }else{
-    let results = JSON.parse(body);
-    console.log("Movie Title: " + results.Title);
-    console.log();
-    console.log("Movie Year: " + results.Year);
-    console.log();
-    console.log("Rotten Tomatoes: " + results.Ratings[0].Value);
-    console.log();
-    console.log("Country Origin: " + results.Country);
-    console.log();
-    console.log("Languages: " + results.Language);
-    console.log();
-    console.log("Movie Plot: " + results.Plot);
-    console.log();
-    console.log("Actor/Actress: " + results.Actors);
-  }
-});
+    console.log(error, "<------------------------");
+    console.log(body, "<------------------------");
+    console.log(body.Response, "<------------------------");
+    
+
+    if (error ||null||undefined) {
+      request('http://www.omdbapi.com/?t=mrnobody&y&apikey=trilogy', function (error, response, body) {
+        let results = JSON.parse(body);
+        console.log("Movie Title: " + results.Title);
+        console.log();
+        console.log("Movie Year: " + results.Year);
+        console.log();
+        console.log("Rotten Tomatoes: " + results.Ratings[0].Value);
+        console.log();
+        console.log("Country Origin: " + results.Country);
+        console.log();
+        console.log("Languages: " + results.Language);
+        console.log();
+        console.log("Movie Plot: " + results.Plot);
+        console.log();
+        console.log("Actor/Actress: " + results.Actors);
+      })
+     }else {
+      let results = JSON.parse(body);
+      console.log("Movie Title: " + results.Title);
+      console.log();
+      console.log("Movie Year: " + results.Year);
+      console.log();
+      console.log("Rotten Tomatoes: " + results.Ratings[0].Value);
+      console.log();
+      console.log("Country Origin: " + results.Country);
+      console.log();
+      console.log("Languages: " + results.Language);
+      console.log();
+      console.log("Movie Plot: " + results.Plot);
+      console.log();
+      console.log("Actor/Actress: " + results.Actors);
+    }
+  });
 }
-}
+
 function myTweets() {
   //The parameters for 
   var params = {
@@ -111,9 +127,20 @@ function aceOfBase() {
 
 function doWhatISays() {
   fs.readFile("random.txt", "utf8", function (error, data) {
-    console.log(data);
+
     let obj = JSON.parse(data);
-    console.log(objected);
-    // spotifyMusic(data);
-  })
-};
+    console.log(obj, "is it an object");
+    let textInpt = obj[1];
+   spotify.search({ type: 'track', query: textInpt, limit: 1 }, function (err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Artist Name: ", data.tracks.items[0].artists[0].name); //artist name
+      console.log("Song Name: ", data.tracks.items[0].name); //Song Name
+      console.log("Preview Link: ", data.tracks.items[0].href);// Song Preview
+      console.log("Album Name: ", data.tracks.items[0].album.name);//Album Name
+    }
+  });
+  });
+}
+ 
